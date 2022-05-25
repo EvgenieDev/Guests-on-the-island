@@ -52,28 +52,30 @@ public class Spawner : MonoBehaviour
         GameObject obj = null;
 
         if (Resources.MainHeroPrefab != null)
+        {
             obj = Instantiate(Resources.MainHeroPrefab, position, Quaternion.identity);
 
-        var damagedObj = obj.GetComponent<DamagedObject>();
-        Resources.AllObjects.Add(damagedObj);
+            var damagedObj = obj.GetComponent<DamagedObject>();
+            Resources.AllObjects.Add(damagedObj);
 
-        if (Resources.MainHeroExperience != 0)
-        {
-            var dO = obj.GetComponent<PlayerDamagedObject>();
-            dO.Health = Resources.MainHeroHP;
-            dO.MaxHealth = Resources.MainHeroHP;
-            dO.Armor = Resources.MainHeroArmor;
+            if (Resources.MainHeroExperience != 0)
+            {
+                var dO = obj.GetComponent<PlayerDamagedObject>();
+                dO.Health = Resources.MainHeroHP;
+                dO.MaxHealth = Resources.MainHeroHP;
+                dO.Armor = Resources.MainHeroArmor;
 
-            var pC = obj.GetComponent<MainCharacterUnit>();
-            pC.Damage = Resources.MainHeroDamage;
-            pC.AttackRadius = Resources.MainHeroDistance;
-            pC.ShootDelay = Resources.MainHeroSpeedAttack;
+                var pC = obj.GetComponent<MainCharacterUnit>();
+                pC.Damage = Resources.MainHeroDamage;
+                pC.AttackRadius = Resources.MainHeroDistance;
+                pC.ShootDelay = Resources.MainHeroSpeedAttack;
 
-            obj.GetComponent<NavMeshAgent>().speed = Resources.MainHeroSpeed;
-        }
-        else
-        {
-            Resources.MainHeroHP = damagedObj.Health;
+                obj.GetComponent<NavMeshAgent>().speed = Resources.MainHeroSpeed;
+            }
+            else
+            {
+                Resources.MainHeroHP = damagedObj.Health;
+            }
         }
     }
 
@@ -93,7 +95,7 @@ public class Spawner : MonoBehaviour
     
     private (float, float) GetRandomLocation()
     {
-        int max = 35;
+        int max = 30;
         int min = 10;
 
         float x;

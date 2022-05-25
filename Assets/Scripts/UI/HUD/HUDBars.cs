@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Units;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -31,6 +30,8 @@ public class HUDBars : MonoBehaviour
     private Text playerSpeedText;
     [SerializeField]
     private Text playerArmorText;
+    [SerializeField]
+    private RawImage image;
 
     private PlayerDamagedObject targetPDO;
     private MainCharacterUnit targetMCU;
@@ -39,6 +40,7 @@ public class HUDBars : MonoBehaviour
     void Start()
     {
         //StartCoroutine(LoopWave());
+        image.texture = Resources.MainHeroImage;
     }
 
     private void Update()
@@ -56,24 +58,6 @@ public class HUDBars : MonoBehaviour
         else
             UpdateGui();
     }
-
-    //public IEnumerator LoopWave()
-    //{
-    //    while (true)
-    //    {
-    //        if (target == null)
-    //        {
-    //            var mcu = FindObjectOfType<MainCharacterUnit>();
-    //            if (mcu != null)
-    //            {
-    //                target = mcu.GetComponent<PlayerDamagedObject>();
-    //            }
-    //        }
-    //        else
-    //            UpdateGui();
-    //        yield return new WaitForSeconds(1);
-    //    }
-    //}
 
     void UpdateGui()
     {

@@ -20,6 +20,8 @@ public class MainMenu : MonoBehaviour
     public AudioMixer audioMixer; //Регулятор громкости
     public Dropdown resolutionDropdown;
 
+    public Texture[] Images;
+
     private void Start()
     {
         settings.gameObject.SetActive(false);
@@ -35,9 +37,7 @@ public class MainMenu : MonoBehaviour
             options.Add(option); //Добавление строки в список
 
             if (Resources.resolutions[i].Equals(Screen.currentResolution)) //Если текущее разрешение равно проверяемому
-            {
                 Resources.currResolutionIndex = i; //То получается его индекс
-            }
         }
 
         resolutionDropdown.AddOptions(options); //Добавление элементов в выпадающий список
@@ -48,7 +48,9 @@ public class MainMenu : MonoBehaviour
     public void Play()
     {
         Resources.MainHeroPrefab = scr.obj[scr.currentNum];
+        Resources.MainHeroImage = Images[scr.currentNum];
         Resources.DeadTime = -1;
+
         var mainHero = Resources.MainHeroPrefab;
 
         var dO = mainHero.GetComponent<PlayerDamagedObject>();

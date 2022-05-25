@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Units;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,10 +14,10 @@ namespace Assets.Scripts.UI
 
         void Update()
         {
-            Debug.Log(shop.transform.position);
+            //Debug.Log(shop.transform.position);
             if (Resources.SelectedUnits.Count > 0 &&
                 !(controllElements.transform.position.x <= Input.mousePosition.x &&
-                controllElements.transform.position.y >= Input.mousePosition.y)&&
+                controllElements.transform.position.y >= Input.mousePosition.y) &&
                 !(shop.transform.position.x <= Input.mousePosition.x &&
                 shop.transform.position.y >= Input.mousePosition.y && shop.active))
             {
@@ -50,37 +51,15 @@ namespace Assets.Scripts.UI
                     {
                         unit.AttackNotFriends();
                     }
-                    //var toBit = Resources.AllObjects.Where(x => x != null)
-                    //                .Where(x => x.team != Types.Team.Friend)
-                    //                .Select(x => x.GetComponent<NavMeshAgent>());
-
-                        //status = Status.Chill;
-
-                        //var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                        //RaycastHit hitInfo;
-                        //if (Physics.Raycast(ray, out hitInfo, 10000))
-                        //{
-                        //    foreach (var agent in toBit)
-                        //    {
-                        //        agent.ResetPath();
-                        //        agent.SetDestination(hitInfo.point);
-                        //    }
-                        //}
-
-                    //HitAllInRadius();
                 }
             }
         }
 
         public void Attack()
         {
-            var friendlyUnits = Resources.SelectedUnits.Where(x => x != null)
-                                                .Select(obj => (Unit)obj.GetComponent<FriendlyUnit>());
-            var mainHero = Resources.SelectedUnits.Where(x => x != null)
-                                                .Select(obj => (Unit)obj.GetComponent<MainCharacterUnit>());
+            var aims = SelectAims();
 
-            foreach (var unit in friendlyUnits.Union(mainHero))
+            foreach (var unit in aims)
             {
                 if (unit != null)
                 {
@@ -94,41 +73,46 @@ namespace Assets.Scripts.UI
 
         public void Stay()
         {
-            var friendlyUnits = Resources.SelectedUnits.Where(x => x != null)
-                                                 .Select(obj => (Unit)obj.GetComponent<FriendlyUnit>());
-            var mainHero = Resources.SelectedUnits.Where(x => x != null)
-                                             .Select(obj => (Unit)obj.GetComponent<MainCharacterUnit>());
+            var aims = SelectAims();
 
-            foreach (var a in friendlyUnits.Union(mainHero))
+            foreach (var unit in aims)
             {
-                if (a != null)
+                if (unit != null)
                 {
-                    var nma = a.GetComponent<NavMeshAgent>();
+                    var nma = unit.GetComponent<NavMeshAgent>();
                     if (nma != null)
                         nma.ResetPath();
-                    a.status = Types.Status.Chill;
+
+                    unit.status = Types.Status.Chill;
                 }
             }
         }
 
         public void Work()
         {
+            var aims = SelectAims();
+
+            foreach (var unit in aims)
+            {
+                if (unit != null)
+                {
+                    var nma = unit.GetComponent<NavMeshAgent>();
+                    if (nma.pathEndPosition != null)
+                        nma.ResetPath();
+
+                    unit.status = Types.Status.Working;
+                }
+            }
+        }
+
+        private IEnumerable<Unit> SelectAims()
+        {
             var friendlyUnits = Resources.SelectedUnits.Where(x => x != null)
-                                                 .Select(obj => (Unit)obj.GetComponent<FriendlyUnit>());
+                                     .Select(obj => (Unit)obj.GetComponent<FriendlyUnit>());
             var mainHero = Resources.SelectedUnits.Where(x => x != null)
                                              .Select(obj => (Unit)obj.GetComponent<MainCharacterUnit>());
 
-            foreach (var a in friendlyUnits.Union(mainHero))
-            {
-                if (a != null)
-                {
-                    var nma = a.GetComponent<NavMeshAgent>();
-                    if (nma.pathEndPosition != null)
-                        nma.ResetPath();
-                    
-                    a.status = Types.Status.Working;
-                }
-            }
+            return friendlyUnits.Union(mainHero);
         }
     }
 }

@@ -4,16 +4,20 @@ public class SelectableCharacter : MonoBehaviour {
 
     public SpriteRenderer selectImage;
 
-    private void Awake() {
+    private void Awake()
+    {
         selectImage.enabled = false;
     }
 
     //Turns off the sprite renderer
     public void TurnOffSelector()
     {
-        selectImage.enabled = false;
-        if(Resources.SelectedUnits.Contains(transform.parent.gameObject))
-            Resources.SelectedUnits.Remove(transform.parent.gameObject);
+        if (selectImage != null)
+        {
+            selectImage.enabled = false;
+            if (Resources.SelectedUnits.Contains(transform.parent.gameObject))
+                Resources.SelectedUnits.Remove(transform.parent.gameObject);
+        }
     }
 
     //Turns on the sprite renderer

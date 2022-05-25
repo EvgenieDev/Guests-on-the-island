@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class ExitMenu : MonoBehaviour
 {
@@ -16,18 +15,17 @@ public class ExitMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Debug.Log("Show");
+            Time.timeScale = (Time.timeScale + 1) % 2;
             Menu.gameObject.SetActive(!Menu.gameObject.activeSelf);
         }
     }
 
     public void Disconnect()
     {
-        SceneManager.LoadScene("Launcher");
-        var t = SceneManager.UnloadSceneAsync("Game");
-        while (!t.isDone)
-        {
+        Time.timeScale = (Time.timeScale + 1) % 2;
 
-        }
+        SceneManager.UnloadSceneAsync("Game");
+
         Menu.gameObject.SetActive(!Menu.gameObject.activeSelf);
         SceneManager.LoadScene("Launcher");
         Debug.Log("Exiting");

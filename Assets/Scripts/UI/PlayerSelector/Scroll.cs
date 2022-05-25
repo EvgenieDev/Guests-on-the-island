@@ -95,14 +95,18 @@ public class Scroll : MonoBehaviour
     private void PrintParameters()
     {
         var currentUnit = obj[currentNum];
+
         var cUDO = currentUnit.GetComponent<PlayerDamagedObject>();
-        var cMCU = currentUnit.GetComponent<MainCharacterUnit>();
         var armor = cUDO.Armor;
+        var health = cUDO.MaxHealth;
+
+        var cMCU = currentUnit.GetComponent<MainCharacterUnit>();
         var damage = cMCU.Damage;
         var attackRadius = cMCU.AttackRadius;
-        var health = cUDO.MaxHealth;
+        var shootDelay = cMCU.ShootDelay;
+
         paramsText.text = $"Хп: {health}{Environment.NewLine}" +
-                          $"Атака: {damage}{Environment.NewLine}" +
+                          $"Урон/сек: {damage*(1/shootDelay)}{Environment.NewLine}" +
                           $"Броня: {armor}{Environment.NewLine}" +
                           $"Дальность атаки: {attackRadius}";
     }

@@ -26,6 +26,7 @@ public static class Resources
     //public static List<object> MainHeroItems;
 
     public static GameObject MainHeroPrefab;
+    public static Texture MainHeroImage;
 
 
     public static float volume = 0; //Громкость
@@ -37,8 +38,6 @@ public static class Resources
     public static int currResolutionIndex = 0; //Текущее разрешение
     public static bool MiniMapState = true;
     public static bool FPSState = true;
-
-
 
 
     public static float FriendlyUnitHpBoost = 0;
@@ -74,6 +73,7 @@ public static class Resources
         //public static List<object> MainHeroItems;
 
         MainHeroPrefab = null;
+        MainHeroImage = null;
 
         FriendlyUnitHpBoost = 0;
 

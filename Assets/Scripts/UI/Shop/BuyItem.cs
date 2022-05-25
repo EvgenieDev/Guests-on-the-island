@@ -1,4 +1,5 @@
 using Assets.Scripts.DamagedObject;
+using Assets.Scripts.UI;
 using Assets.Scripts.Units;
 using System;
 using System.Collections;
@@ -43,24 +44,35 @@ public class BuyItem : MonoBehaviour
     [SerializeField]
     private float ExperienceBoost;
 
-    private GameObject MainHero;
+    private static GameObject MainHero;
 
 
-    void Awake()
+    private void Start()
     {
         SetText();
+        //StartCoroutine(FindMainHero());
     }
 
-    void Update()
+    private static void GetMainHeroScript()
     {
-        if (MainHero is null)
+        var mainHeroScript = Resources.AllObjects.Where(x => x != null)
+                                           .Select(x => x.GetComponent<MainCharacterUnit>())
+                                           .Where(x => x != null)
+                                           .ToList();
+
+
+        var tttt = mainHeroScript.FirstOrDefault();
+
+        if (mainHeroScript != null)
+            MainHero = tttt.gameObject;
+    }
+
+    public IEnumerator FindMainHero()
+    {
+        while (true)
         {
-            var mainHeroScript = Resources.AllObjects.Where(x => x != null)
-                                            .Select(x => x.GetComponent<MainCharacterUnit>())
-                                            .Where(x => x != null)
-                                            .FirstOrDefault();
-            if(mainHeroScript!=null)
-                MainHero = mainHeroScript.gameObject;
+            GetMainHeroScript();
+            yield return new WaitForSeconds(1);
         }
     }
 
@@ -68,8 +80,8 @@ public class BuyItem : MonoBehaviour
     {
         //извини за это, бро
         textInp.text =
-            name + Environment.NewLine +
-            string.Join(Environment.NewLine, text) + Environment.NewLine +
+                        name + Environment.NewLine +
+                        string.Join(Environment.NewLine, text) + Environment.NewLine +
                         (HPBoost != 0 ? $"{(HPBoost > 0 ? "+" : "")} {HPBoost} к хп" + Environment.NewLine : string.Empty) +
                         (DamageBoost != 0 ? $"{(DamageBoost > 0 ? "+" : "")} {DamageBoost} к дамагу" + Environment.NewLine : string.Empty) +
                         (ArmorBoost != 0 ? $"{(ArmorBoost > 0 ? "+" : "")} {ArmorBoost} к армору" + Environment.NewLine : string.Empty) +
@@ -89,12 +101,13 @@ public class BuyItem : MonoBehaviour
 
     public void Clicked()
     {
+        GetMainHeroScript();
         if (Resources.MainHeroGold < price)
         {
             textInp.text = "No money" + Environment.NewLine + "No honey!";
             StartCoroutine(SetTextCor());
         }
-        else if (MainHero.gameObject==null)
+        else if (MainHero.gameObject == null)
         {
             textInp.text = "Вы мертвы(";
             StartCoroutine(SetTextCor());
@@ -107,20 +120,16 @@ public class BuyItem : MonoBehaviour
             dO.Health += HPBoost;
             dO.MaxHealth += HPBoost;
             Resources.MainHeroHP = dO.MaxHealth;
-
             dO.Armor += ArmorBoost;
             Resources.MainHeroArmor = dO.Armor;
 
             var pC = MainHero.GetComponent<MainCharacterUnit>();
             pC.Damage += DamageBoost;
             Resources.MainHeroDamage = pC.Damage;
-
             pC.AttackRadius += DistanceBoost;
             Resources.MainHeroDistance = pC.AttackRadius;
-
             pC.ShootDelay *= 1 - SpeedAttackBoost / 100;
             Resources.MainHeroSpeedAttack = pC.ShootDelay;
-
             Resources.MainHeroExperience += ExperienceBoost + price / 10;
 
             var nma = MainHero.GetComponent<NavMeshAgent>();
