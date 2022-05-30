@@ -12,7 +12,7 @@ public static class Resources
 
     public static List<GameObject> SelectedUnits = new List<GameObject>();
 
-    public static float MainHeroGold = 100;
+    public static float MainHeroGold = 155;
     public static float MainHeroExperience = 0;
 
     public static float MainHeroHP;

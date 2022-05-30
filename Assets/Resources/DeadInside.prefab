@@ -148,9 +148,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8893ff4c35c31f42b99998bb8364b61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  status: 4
+  status: 1
   IsWalking: 0
-  attackType: 1
+  attackType: 0
   Damage: 25
   ShootDelay: 0.5
   AttackRadius: 45

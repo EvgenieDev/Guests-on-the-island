@@ -20,7 +20,6 @@ public class Tower : MonoBehaviour
     private Bullet _bulletPrefab;
 
     private DamagedObject _player;
-    private bool _inRadius;
 
     [SerializeField]
     public Team target;
@@ -44,37 +43,28 @@ public class Tower : MonoBehaviour
                                           .FirstOrDefault();
             if (_player != default)
             {
-                CheckDistance();
-                AimToPlayer();
-                TryToShoot();
+                var dist = Vector3.Distance(_shootPivot.position , _player.transform.position);
+
+                if (dist <= _attackRadius)
+                {
+                    var vector = _player.transform.position;
+                    var distenition = new Vector3();
+                    if (dist > 125)
+                        distenition = new Vector3(vector.x, -10, vector.z);
+                    else
+                        distenition = new Vector3(vector.x, 0, vector.z);
+
+                    _shootPivot.LookAt(distenition);
+                    TryToShoot();
+                }
             }
             yield return new WaitForSeconds(_shootDelay);
         }
     }
 
-    private void CheckDistance()
-    {
-        _inRadius = (_shootPivot.position - _player.transform.position).sqrMagnitude
-                        <= _attackRadius * _attackRadius;
-    }
-
-    private void AimToPlayer()
-    {
-        if (_inRadius)
-        {
-            var vector = _player.transform.position;
-            var distenition = new Vector3(vector.x, -10, vector.z);
-
-            _shootPivot.LookAt(distenition);
-        }
-    }
-
     private void TryToShoot()
     {
-        if (_inRadius)
-        {
             Instantiate(_bulletPrefab, _shootPivot.position, _shootPivot.rotation);
             _audio.Play();
-        }
     }
 }

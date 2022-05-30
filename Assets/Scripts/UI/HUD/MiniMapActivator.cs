@@ -7,6 +7,8 @@ public class MiniMapActivator : MonoBehaviour
     private GameObject minimap;
     [SerializeField]
     private GameObject fpsMeter;
+    [SerializeField]
+    private GameObject minimapCamera;
 
     void Start()
     {
@@ -17,6 +19,7 @@ public class MiniMapActivator : MonoBehaviour
     {
         while (true)
         {
+            minimapCamera.active = Resources.MiniMapState;
             minimap.active = Resources.MiniMapState;
             fpsMeter.active = Resources.FPSState;
             yield return new WaitForSeconds(5);

@@ -80,6 +80,7 @@ namespace Assets.Scripts.Units
 
             FindAim(target);
         }
+
         public virtual void UpdateWorking()
         {
             var target = Resources.AllObjects.Where(x => x != null)
@@ -91,7 +92,8 @@ namespace Assets.Scripts.Units
         public virtual void AttackNotFriends()
         {
             var target = Resources.AllObjects.Where(x => x != null)
-                                            .Where(o => o.team != Team.Friend);
+                                            .Where(o => o.team != Team);
+
             FindAim(target, false);
         }
 
@@ -104,13 +106,36 @@ namespace Assets.Scripts.Units
             {
                 if (ShootTime < 0)
                 {
-                    foreach (var obj in target)
+                    var targetList = target.ToList();
+                    foreach (var obj in targetList)
                     {
-                        //RaycastHit hitInfo;
-                        //Physics.Raycast(transform.position, obj.transform.position, out hitInfo, 100000);
                         var distance = Vector3.Distance(transform.position, obj.transform.position);
-                        //Debug.Log(distance);
+
                         Hit(obj, distance);
+                        if (distance < minDist)
+                        {
+                            minDist = distance;
+                            minObj = obj;
+                        }
+                    }
+                    ShootTime = ShootDelay;
+                }
+            }
+            else if (attackType == AttackType.NearRange)
+            {
+                if (ShootTime < 0)
+                {
+                    var targetList = target.ToList();
+                    foreach (var obj in targetList)
+                    {
+                        var distance = Vector3.Distance(transform.position, obj.transform.position);
+
+                        
+                        if(targetList.Count<=2)
+                            Hit(obj, distance, Damage);
+                        else
+                            Hit(obj, distance, Damage / (2 - (2 / targetList.Count)));
+
                         if (distance < minDist)
                         {
                             minDist = distance;
@@ -124,8 +149,6 @@ namespace Assets.Scripts.Units
             {
                 foreach (var obj in target)
                 {
-                    //RaycastHit hitInfo;
-                    //Physics.Raycast(transform.position, obj.transform.position, out hitInfo, 100000);
                     var distance = Vector3.Distance(transform.position, obj.transform.position);
                     //Debug.Log(distance);
                     if (distance < minDist)
@@ -147,93 +170,6 @@ namespace Assets.Scripts.Units
                 GetComponent<Unit>().IsWalking = true;
             }
         }
-
-        //public virtual void UpdateFighting()
-        //{
-        //    var toBit = Resources.AllObjects.Where(x => x != null)
-        //                        .Where(x => (int)x.team == ((int)Team + 1) % 2);
-
-        //    var minDist = float.MaxValue;
-        //    DamagedObject.DamagedObject minObj = default;
-
-        //    foreach (var obj in toBit)
-        //    {
-        //        if (obj != null)
-        //        {
-        //            var distance = Vector3.Distance(transform.position, obj.transform.position);
-
-        //            if (distance < minDist)
-        //            {
-        //                minDist = distance;
-        //                minObj = obj;
-        //            }
-        //        }
-        //    }
-
-        //    if (minObj != default && minDist > AttackRadius)
-        //    {
-        //        //agent.ResetPath();
-        //        Agent.SetDestination(minObj.gameObject.transform.position);
-        //    }
-
-        //    if (minDist <= AttackRadius)
-        //    {
-        //        //Debug.Log($"союзник хочет ударить на {minObj.name}");
-        //        DistHit(minObj);
-        //    }
-        //}
-
-        //public virtual void UpdateWorking()
-        //{
-        //    var woods = Resources.AllObjects.Where(x => x != null)
-        //                                    .Where(o => o.team == Team.Wood);
-
-        //    var minDist = float.MaxValue;
-        //    DamagedObject.DamagedObject minObj = default;
-
-        //    foreach (var obj in woods)
-        //    {
-        //        var distance = Vector3.Distance(transform.position, obj.transform.position);
-
-        //        if (distance < minDist)
-        //        {
-        //            minDist = distance;
-        //            minObj = obj;
-        //        }
-        //    }
-
-        //    if (minObj != default && minDist > AttackRadius)
-        //    {
-        //        //agent.ResetPath();
-        //        Agent.SetDestination(minObj.gameObject.transform.position);
-        //    }
-
-        //    if (minDist <= AttackRadius)
-        //    {
-        //        //Debug.Log($"союзник хочет ударить на {minObj.name}");
-        //        DistHit(minObj);
-        //    }
-        //}
-        
-        //public virtual void DistHit(DamagedObject.DamagedObject gameObject)
-        //{
-        //    //var gameObjects = FindObjectsOfType<DamagedObject>();
-        //    //RaycastHit hit;
-        //    transform.LookAt(gameObject.transform.position);
-        //    DoDamage(gameObject);
-        //    //Debug.Log($"союзник нападает на {gameObject.name}");
-        //    //if (Physics.Raycast(transform.position, gameObject.transform.position, out hit, 100000))
-        //    //{
-        //    //    //transform.LookAt(hit.point);
-        //    //    var dist = Vector3.Distance(hit.collider.transform.position, hit.point);
-
-        //    //    if (dist < _attackRadius)
-        //    //    {
-        //    //        Debug.Log($"союзник нападает на {hit.collider.gameObject.name}");
-        //    //        DoDamage(hit.collider.gameObject.GetComponent<DamagedObject>());
-        //    //    }
-        //    //}
-        //}
 
         public virtual void DoDamage(DamagedObject.DamagedObject e)
         {
@@ -274,39 +210,46 @@ namespace Assets.Scripts.Units
         }
 
 
-        private void Hit(DamagedObject.DamagedObject obj, float distance)
+        private void Hit(DamagedObject.DamagedObject obj, float distance, float damage = 0)
         {
             if (distance <= AttackRadius)
             {
                 transform.LookAt(obj.transform.position);
-                if (attackType == AttackType.Near)
+                if (attackType == AttackType.NearRange)
                 {
                     Anime.SetTrigger("Attack");
-
-                    obj.ApplyDamage(Damage);
+                    if (damage == default)
+                        obj.ApplyDamage(Damage);
+                    else
+                        obj.ApplyDamage(damage);
 
                     if (_audio != null)
                         _audio.Play();
 
                     Anime.ResetTrigger("Attack");
                 }
-                else if (attackType == AttackType.Distant)
+                else
                 {
                     if (ShootTime < 0)
                     {
                         Anime.SetTrigger("Attack");
 
                         obj.ApplyDamage(Damage);
-                        if(_audio != null)
+                        if (_audio != null)
                             _audio.Play();
                         ShootTime = ShootDelay;
 
                         Anime.ResetTrigger("Attack");
                     }
-                    //Debug.Log($"союзник хочет ударить на {minObj.name}");
                 }
             }
         }
+    }
 
+    public enum AttackType
+    {
+        Near,
+        NearRange,
+        Distant,
     }
 }

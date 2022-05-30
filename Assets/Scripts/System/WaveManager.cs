@@ -45,6 +45,6 @@ public class WaveManager : MonoBehaviour
         for (int i = 0; i < amountOfUnits/2; i++)
             foreach (var spawner in spawners)
                 if(spawner!=null)
-                    spawner.Spawn(waveCount * 7, waveCount*1.5f);
+                    spawner.Spawn(waveCount * 10, waveCount*1.65f);
     }
 }

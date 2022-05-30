@@ -37,6 +37,7 @@ public class UserInterfaceWorker : MonoBehaviour
             Table.active = true;
             text.text = "You Win!" + Environment.NewLine;
             text.text += Environment.NewLine;
+            Time.timeScale = 0;
         }
 
         if (Resources.BaracFriendCount == 0)
@@ -44,6 +45,7 @@ public class UserInterfaceWorker : MonoBehaviour
             Table.active = true;
             text.text = "You Lose!" + Environment.NewLine;
             text.text += Environment.NewLine;
+            Time.timeScale = 0;
         }
     }
 }

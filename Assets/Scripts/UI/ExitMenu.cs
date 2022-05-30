@@ -22,12 +22,15 @@ public class ExitMenu : MonoBehaviour
 
     public void Disconnect()
     {
-        Time.timeScale = (Time.timeScale + 1) % 2;
-
+        
+        Time.timeScale = 1;
         SceneManager.UnloadSceneAsync("Game");
-
-        Menu.gameObject.SetActive(!Menu.gameObject.activeSelf);
         SceneManager.LoadScene("Launcher");
+        //Menu.gameObject.SetActive(!Menu.gameObject.activeSelf);
+
+
+
+
         Debug.Log("Exiting");
         Resources.ReCreate();
         //PhotonNetwork.Disconnect();

@@ -14,9 +14,9 @@ namespace Assets.Scripts.UI
 
         void Update()
         {
-            //Debug.Log(shop.transform.position);
             if (Resources.SelectedUnits.Count > 0 &&
                 !(controllElements.transform.position.x <= Input.mousePosition.x &&
+                controllElements.transform.position.x + 500 >= Input.mousePosition.x &&
                 controllElements.transform.position.y >= Input.mousePosition.y) &&
                 !(shop.transform.position.x <= Input.mousePosition.x &&
                 shop.transform.position.y >= Input.mousePosition.y && shop.active))
@@ -42,22 +42,23 @@ namespace Assets.Scripts.UI
                         }
                     }
                 }
+            }
 
-                if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1))
+            {
+                var units = Resources.SelectedUnits.Where(x => x != null)
+                                            .Select(obj => obj.GetComponent<Unit>());
+                foreach (var unit in units)
                 {
-                    var units = Resources.SelectedUnits.Where(x => x != null)
-                                                .Select(obj => obj.GetComponent<Unit>());
-                    foreach (var unit in units)
-                    {
-                        unit.AttackNotFriends();
-                    }
+                    unit.AttackNotFriends();
                 }
             }
+
         }
 
         public void Attack()
         {
-            var aims = SelectAims();
+            var aims = SelectAims().ToList();
 
             foreach (var unit in aims)
             {
@@ -73,7 +74,7 @@ namespace Assets.Scripts.UI
 
         public void Stay()
         {
-            var aims = SelectAims();
+            var aims = SelectAims().ToList();
 
             foreach (var unit in aims)
             {
@@ -90,7 +91,7 @@ namespace Assets.Scripts.UI
 
         public void Work()
         {
-            var aims = SelectAims();
+            var aims = SelectAims().ToList();
 
             foreach (var unit in aims)
             {
@@ -112,7 +113,8 @@ namespace Assets.Scripts.UI
             var mainHero = Resources.SelectedUnits.Where(x => x != null)
                                              .Select(obj => (Unit)obj.GetComponent<MainCharacterUnit>());
 
-            return friendlyUnits.Union(mainHero);
+            return friendlyUnits.Union(mainHero)
+                                .Where(x=> x!=null);
         }
     }
 }

@@ -33,6 +33,13 @@ public class Scroll : MonoBehaviour
     private Vector3[] defaultScale, bigScale;
 
     public int currentNum = 0;
+    public Text Description;
+    public string[] Descriptions;
+
+    public Text DPS;
+    public Text MovementsSpeed;
+    public Text Health;
+    public Text Armor;
 
     void Start()
     {
@@ -102,13 +109,17 @@ public class Scroll : MonoBehaviour
 
         var cMCU = currentUnit.GetComponent<MainCharacterUnit>();
         var damage = cMCU.Damage;
-        var attackRadius = cMCU.AttackRadius;
+        //var attackRadius = cMCU.AttackRadius;
         var shootDelay = cMCU.ShootDelay;
+        var nma = currentUnit.GetComponent<NavMeshAgent>();
+        var movementSpeed = nma.speed;
 
-        paramsText.text = $"Хп: {health}{Environment.NewLine}" +
-                          $"Урон/сек: {damage*(1/shootDelay)}{Environment.NewLine}" +
-                          $"Броня: {armor}{Environment.NewLine}" +
-                          $"Дальность атаки: {attackRadius}";
+        DPS.text = ((int)(damage * (1 / shootDelay))).ToString();
+        Health.text = ((int)health).ToString();
+        Armor.text = ((int)armor).ToString();
+        MovementsSpeed.text = ((int)movementSpeed).ToString();
+
+        Description.text = Descriptions[currentNum];
     }
 
     public IEnumerator Rotate()

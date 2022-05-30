@@ -214,7 +214,11 @@ PrefabInstance:
       objectReference: {fileID: 529466946198536765, guid: c8aefd6e658729544a6a8cd6d8c4a011, type: 3}
     - target: {fileID: 6298882183963698601, guid: c8aefd6e658729544a6a8cd6d8c4a011, type: 3}
       propertyPath: m_Speed
-      value: 40
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6298882183963698601, guid: c8aefd6e658729544a6a8cd6d8c4a011, type: 3}
+      propertyPath: m_Radius
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 6298882183963698601, guid: c8aefd6e658729544a6a8cd6d8c4a011, type: 3}
       propertyPath: m_Acceleration
@@ -404,9 +408,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   status: 4
   IsWalking: 0
-  attackType: 0
+  attackType: 1
   Damage: 20
   ShootDelay: 0.5
   AttackRadius: 50
-  Team: 0
+  Team: 1
   ShootTime: 0

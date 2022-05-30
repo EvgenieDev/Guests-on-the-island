@@ -127,7 +127,7 @@ namespace Tayx.Graphy.Fps
 
             m_highestFps = m_highestFps > 0 ? m_highestFps : 1;
 
-            if (m_shaderGraph!= null && m_shaderGraph.ShaderArrayValues == null)
+            if (m_shaderGraph.ShaderArrayValues == null)
             {
                 m_fpsArray                  = new int[m_resolution];
                 m_shaderGraph.ShaderArrayValues         = new float[m_resolution];

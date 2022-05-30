@@ -63,7 +63,7 @@ public class BuyItem : MonoBehaviour
 
         var tttt = mainHeroScript.FirstOrDefault();
 
-        if (mainHeroScript != null)
+        if (tttt != null)
             MainHero = tttt.gameObject;
     }
 
@@ -96,25 +96,24 @@ public class BuyItem : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         SetText();
-        yield return null;
     }
 
     public void Clicked()
     {
         GetMainHeroScript();
+        StartCoroutine(SetTextCor());
         if (Resources.MainHeroGold < price)
         {
             textInp.text = "No money" + Environment.NewLine + "No honey!";
-            StartCoroutine(SetTextCor());
         }
         else if (MainHero.gameObject == null)
         {
             textInp.text = "Вы мертвы(";
-            StartCoroutine(SetTextCor());
         }
         else
         {
             Resources.MainHeroGold -= price;
+            price *= 1.10f;
 
             var dO = MainHero.GetComponent<PlayerDamagedObject>();
             dO.Health += HPBoost;
